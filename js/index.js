@@ -12,7 +12,7 @@ function cleanPhotoPath(value) {
 }
 
 async function loadFeaturedHolesFromApi() {
-  const response = await fetch("http://127.0.0.1:5000/api/holes");
+  const response = await fetch("https://coursecaddy.onrender.com/api/holes");
   if (!response.ok) {
     throw new Error("Failed to load featured holes from API.");
   }
