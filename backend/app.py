@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import csv
 
@@ -60,7 +60,31 @@ def submit_missing_hole():
 
 @app.route("/")
 def home():
-    return "Caddy Compass backend is running."
+    return send_from_directory("..", "index.html")
+
+@app.route("/holes.html")
+def holes_page():
+    return send_from_directory("..", "holes.html")
+
+@app.route("/review.html")
+def review_page():
+    return send_from_directory("..", "review.html")
+
+@app.route("/courses.html")
+def courses_page():
+    return send_from_directory("..", "courses.html")
+
+@app.route("/css/<path:filename>")
+def css_files(filename):
+    return send_from_directory("../css", filename)
+
+@app.route("/js/<path:filename>")
+def js_files(filename):
+    return send_from_directory("../js", filename)
+
+@app.route("/assets/<path:filename>")
+def asset_files(filename):
+    return send_from_directory("../assets", filename)
 
 
 @app.route("/api/courses")
