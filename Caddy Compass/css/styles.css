@@ -1,0 +1,405 @@
+/* =========================================================
+   GLOBAL VARIABLES & BASE STYLES
+   ========================================================= */
+:root {
+  --brand: #003C21;
+  --ink: #111;
+  --bg: #f8faf9;
+  --card: #fff;
+  --ring: #d1d5db;
+}
+
+body {
+  margin: 0;
+  font-family: Segoe UI, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+main {
+  max-width: 1000px;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--ring);
+  border-radius: 12px;
+}
+
+.pad {
+  padding: 1rem;
+}
+
+input,
+select,
+button,
+textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--ring);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* =========================================================
+   HEADER, LOGO & NAVIGATION
+   ========================================================= */
+header {
+  background: var(--brand);
+  border-bottom: none;
+}
+
+.nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 48px;
+  width: auto;
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tab.active {
+  background: #fff;
+  color: var(--brand);
+}
+.hero-subtext {
+    text-align: left;
+    font-size: 18px;
+    color: #333;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+/* =========================================================
+   FEATURED HOLE CARDS ON HOMEPAGE
+   ========================================================= */
+.hole-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.three-wide {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.hole-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* 👈 centers everything horizontally */
+  text-align: center;         /* 👈 centers text */
+}
+
+.hole-title {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.hole-sub {
+    margin-top: auto;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: 0.3px;
+}
+
+.hole-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hole-img {
+  width: 320px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--ring);
+  background: #eee;
+  cursor: pointer;
+}
+
+.hole-title {
+  font-weight: 800;
+  color: var(--brand);
+}
+
+.hole-sub {
+  color: #444;
+}
+
+/* =========================================================
+   QUOTE SECTION (Golf Quotes JS)
+   ========================================================= */
+.quote-card {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--ring);
+}
+
+.quote-body {
+  font-size: 1.1rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.quote-author {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.quote-actions button {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* =========================================================
+   PURPOSE & ABOUT SECTION (Homepage bottom)
+   ========================================================= */
+.col-4 {
+  width: 100%;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================================================
+   FOOTER STYLES
+   ========================================================= */
+.site-footer {
+  background: var(--brand);
+  color: #fff;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.ft-col {
+  width: 30%;
+}
+
+.ft-col.center {
+  text-align: center;
+}
+
+.ft-col.right {
+  text-align: right;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: #fff;
+  margin: 1rem 0;
+}
+
+.social {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.ico svg {
+  fill: #fff;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  height: 60px;
+  width: auto;
+}
+
+/* =========================================================
+   SIGNATURE HOLES TABLE (holes.html)
+   ========================================================= */
+#holesTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#holesTable th,
+#holesTable td {
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#holesTable thead th {
+  border-bottom: 1px solid var(--ring);
+}
+
+#holesTable tbody tr:hover {
+  background: #f3f9f5;
+}
+
+.course-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.course-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+/* =========================================================
+   STAR RATING DISPLAY (holes.html)
+   ========================================================= */
+.stars {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.star-row {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 22px;
+}
+
+.full {
+  color: #f4c430;
+}
+
+.empty {
+  color: #d9d9d9;
+}
+
+.half {
+  background: linear-gradient(90deg, #f4c430 50%, #d9d9d9 50%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =========================================================
+   MODAL LIGHTBOX FOR IMAGES
+   ========================================================= */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal img {
+  max-width: 900px;
+  max-height: 600px;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 32px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* =========================================================
+   COURSE PAGE GENERAL LAYOUT (courses.html)
+   ========================================================= */
+.course-card {
+  border: 1px solid var(--ring);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+/* Featured hole cards */
+.hole-card {
+  overflow: hidden;      /* keeps images inside rounded corners */
+  border-radius: 12px;   /* matches your card radius */
+}
+
+/* Featured images */
+.hole-img {
+  width: 100%;
+  height: 180px;         /* or your preferred height */
+  object-fit: cover;     /* prevents stretching and overflow */
+  display: block;        /* removes inline gap */
+  border-radius: 0;      /* allow parent to control the rounding */
+}
+
+.cc-rating-box{
+  text-align:center;
+  font-size:2.2rem;
+  font-weight:900;
+  color:var(--brand);
+}
+
+.cc-rating-label{
+  font-size:.9rem;
+  font-weight:700;
+  color:#555;
+  text-transform:uppercase;
+  letter-spacing:.08rem;
+}

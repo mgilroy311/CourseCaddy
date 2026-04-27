@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Searchable database of South Carolina golf courses with photos, yardage, slope, and course details.">
+  <meta name="keywords" content="Golf, South Carolina Golf Courses, Yardage, Slope, Course Finder">
+  <meta name="author" content="Michael Gilroy">
+
+  <title>Course Caddy – Courses</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- Page-local styles -->
+  <style>
+    :root{
+      --brand:#003C21;
+      --ink:#111;
+      --bg:#f8faf9;
+      --card:#fff;
+      --ring:#d1d5db;
+    }
+
+    /* Base */
+    body{ margin:0; font-family:Segoe UI,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    main{ max-width:1000px; margin:1rem auto; padding:1rem; }
+    .card{ background:var(--card); border:1px solid var(--ring); border-radius:12px; }
+    .pad{ padding:1rem; }
+    .controls{ margin:1rem 0; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+    input,select,button{ padding:.5rem; border:1px solid var(--ring); border-radius:8px; background:#fff; }
+
+    /* <!-- ============================
+       HEADER + NAVIGATION
+       ============================ --> */
+
+    header{ background:var(--brand); }
+    .nav{ max-width:1200px; margin:0 auto; padding:.75rem 1rem; display:flex; justify-content:space-between; align-items:center; }
+    .nav-left{ display:flex; align-items:center; gap:.5rem; }
+    .logo-img{ height:48px; }
+    .logo-text{ font-weight:800; font-size:1.25rem; color:#fff; letter-spacing:1px; }
+    .tabs{ display:flex; gap:1rem; }
+    .tab{ padding:.5rem 1rem; border-radius:999px; color:#fff; text-decoration:none; font-weight:600; }
+    .tab.active{ background:#fff; color:var(--brand); }
+
+    /* Table */
+    #coursesTable{ width:100%; border-collapse:separate; border-spacing:0; }
+    #coursesTable th, #coursesTable td{ padding:1rem; text-align:left; }
+    #coursesTable thead th{ border-bottom:1px solid var(--ring); }
+    #coursesTable tbody tr::after{
+      content:""; position:absolute; left:0; right:0; bottom:0; height:1px;
+      background:var(--ring);
+    }
+    #coursesTable tbody tr:hover{ background:#f3f9f5; }
+    #coursesTable th:first-child,
+    #coursesTable td:first-child{ width:360px; }
+
+    /* Course cell */
+    .course-cell{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:.5rem; }
+    .course-name{ font-size:1.1rem; font-weight:700; color:var(--brand); }
+    .course-thumb{
+      width:320px; height:220px; object-fit:cover;
+      border-radius:10px; border:1px solid var(--ring); background:#eee; cursor:pointer;
+    }
+    .no-photo{
+      width:320px; height:220px; display:flex; align-items:center; justify-content:center;
+      border-radius:10px; border:1px dashed var(--ring); color:#666; background:#fafafa;
+      font-weight:700;
+    }
+
+    /* Modal */
+    .modal{
+      display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.8);
+      justify-content:center; align-items:center;
+    }
+    .modal.show{ display:flex; }
+    .modal img{
+      max-width:900px; max-height:600px; border-radius:12px;
+      box-shadow:0 0 20px rgba(0,0,0,.6);
+    }
+    .modal-close{
+      position:absolute; top:20px; right:30px; font-size:32px; color:#fff; cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <img src="assets/photos/CClogo.png" alt="Caddy Compass Logo" class="logo-img" />
+        <span class="logo-text">CADDY COMPASS</span>
+      </div>
+      <div class="tabs">
+        <a href="index.html" class="tab">Home</a>
+        <a href="holes.html" class="tab">Signature Holes</a>
+        <a href="courses.html" class="tab active">Courses</a>
+        <a href="review.html" class="tab">Review</a>
+      </div>
+    </nav>
+  </header>
+  <!-- ============================
+       MAIN CONTENT
+       ============================ -->
+  <main>
+
+    <section class="card pad" id="courses-section">
+      <h2>Courses (Statewide)</h2>
+
+      <div class="controls">
+        <input id="q" type="text" placeholder="Search name/city" />
+        <input id="zip" type="text" placeholder="ZIP" maxlength="5" />
+        <span>Yardage</span>
+        <input id="minY" type="number" value="0" min="0" max="9000" />–
+        <input id="maxY" type="number" value="9000" min="0" max="9000" />
+        <span>Slope</span>
+        <input id="minS" type="number" value="55" min="55" max="155" />–
+        <input id="maxS" type="number" value="155" min="55" max="155" />
+        <button id="reset" type="button">Reset</button>
+      </div>
+
+      <div class="card" style="overflow:auto">
+        <table id="coursesTable">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>City</th>
+              <th>ZIP</th>
+              <th>Yardage</th>
+              <th>Slope</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+ 
+  <!-- ============================
+       FOOTER
+       ============================ -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="ft-col">
+        <h4>Information</h4>
+        <p><a href="#">Privacy policy</a> / <a href="#">Terms of use</a></p>
+      </div>
+
+      <div class="ft-col center">
+        <h4><button class="back-to-top" type="button">Back to top</button></h4>
+      </div>
+
+      <div class="ft-col right">
+        <h4>Stay connected</h4>
+        <form id="newsletter" class="newsletter" novalidate>
+          <input type="email" placeholder="*Email" aria-label="Email" required />
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-bottom">
+      <div class="designer">Designed by Michael Gilroy</div>
+      <div class="copyright">© <span id="year"></span> Caddy Compass. All rights reserved.</div>
+      <div class="contact">
+        <div class="contact-title">Contact Info</div>
+        <div>Ph: 555-555-5555</div>
+        <div>Email: Gilroymj@email.sc.edu</div>
+        <div>Myrtle Beach, SC</div>
+      </div>
+      <img class="footer-logo" src="assets/photos/CClogo.png" alt="Caddy Compass" />
+    </div>
+  </footer>
+
+  
+  <div id="imgModal" class="modal" aria-hidden="true" role="dialog" aria-label="Course photo viewer">
+    <span class="modal-close" id="closeModal">&times;</span>
+    <img id="modalImg" src="" alt="Course photo enlarged" />
+  </div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+
+    const number = v => {
+      const n = parseFloat(String(v ?? '').replace(/[^0-9.]/g, ''));
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    async function loadCSV(path){
+      const res = await fetch(path, { cache:'no-store' });
+      if(!res.ok) throw new Error('CSV load failed: ' + path);
+      const txt = await res.text();
+      return Papa.parse(txt, { header:true, skipEmptyLines:true }).data;
+    }
+
+    function courseCellHTML(name, photo){
+      const filename = (photo || '').trim();
+      if(!filename){
+        return `
+          <div class="course-cell">
+            <div class="no-photo">No photo</div>
+            <div class="course-name"><strong>${name}</strong></div>
+          </div>`;
+      }
+      const imgSrc = `assets/photos/${filename}`;
+      return `
+        <div class="course-cell">
+          <img
+            src="${imgSrc}"
+            alt="${name}"
+            class="course-thumb"
+            loading="lazy"
+            data-large="${imgSrc}"
+            onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'no-photo',textContent:'No photo'}))"
+          />
+          <div class="course-name"><strong>${name}</strong></div>
+        </div>`;
+    }
+
+    function buildRowHTML(r){
+      const courseName = r.name || '';
+      const city = r.location || '';
+      const zip = r.zip || '';
+      const yard = r.yardage || '';
+      const slope = r.slope || '';
+      const photo = r.image || '';
+
+      return `
+        <td>${courseCellHTML(courseName, photo)}</td>
+        <td>${city}</td>
+        <td>${zip}</td>
+        <td>${yard}</td>
+        <td>${slope}</td>`;
+    }
+
+    function render(rows){
+      const q = ($('#q').value || '').toLowerCase();
+      const zip = ($('#zip').value || '').trim();
+      const minY = number($('#minY').value), maxY = number($('#maxY').value);
+      const minS = number($('#minS').value), maxS = number($('#maxS').value);
+
+      const tbody = $('#coursesTable tbody');
+      tbody.innerHTML = '';
+
+      rows.filter(r => {
+        const name = (r.name || '').toLowerCase();
+        const city = (r.location || '').toLowerCase();
+        const yard = number(r.yardage);
+        const slope = number(r.slope);
+        const z = (r.zip || '').toString();
+
+        const matchQ = !q || name.includes(q) || city.includes(q);
+        const matchZip = !zip || z.startsWith(zip);
+
+        const matchY = !yard || (yard >= minY && yard <= maxY);
+        const matchS = !slope || (slope >= minS && slope <= maxS);
+
+        return matchQ && matchZip && matchY && matchS;
+      }).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = buildRowHTML(r);
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.course-thumb').forEach(img => {
+        img.onclick = () => {
+          const src = img.dataset.large || img.src;
+          $('#modalImg').src = src;
+          const modal = $('#imgModal');
+          modal.classList.add('show');
+          modal.setAttribute('aria-hidden','false');
+        };
+      });
+    }
+
+    (async () => {
+      const y = document.getElementById('year');
+      if(y) y.textContent = new Date().getFullYear();
+
+      let rows = [];
+      try {
+      const response = await fetch("http://127.0.0.1:5000/api/courses");
+      rows = await response.json();
+      } catch(e){
+        console.error(e);
+        alert('Could not load course database.');
+        return;
+      }
+
+      render(rows);
+
+      ['q','zip','minY','maxY','minS','maxS'].forEach(id => {
+        $('#'+id).addEventListener('input', () => render(rows));
+      });
+
+      $('#reset').addEventListener('click', () => {
+        $('#q').value = '';
+        $('#zip').value = '';
+        $('#minY').value = 0;
+        $('#maxY').value = 9000;
+        $('#minS').value = 55;
+        $('#maxS').value = 155;
+        render(rows);
+      });
+
+      $('#closeModal').onclick = () => {
+        $('#imgModal').classList.remove('show');
+        $('#imgModal').setAttribute('aria-hidden','true');
+      };
+      $('#imgModal').onclick = (e) => {
+        if(e.target.id === 'imgModal'){
+          $('#imgModal').classList.remove('show');
+          $('#imgModal').setAttribute('aria-hidden','true');
+        }
+      };
+
+      document.addEventListener('click', (e)=>{
+        if(e.target.closest('.back-to-top')){
+          window.scrollTo({top:0,behavior:'smooth'});
+        }
+      });
+
+      const form = document.getElementById('newsletter');
+      if(form){
+        form.addEventListener('submit', e=>{
+          e.preventDefault();
+          alert('Thanks!');
+          form.reset();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

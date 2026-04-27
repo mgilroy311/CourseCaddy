@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- Meta tags required for rubric -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Caddy Compass helps golfers explore and compare South Carolina golf courses and signature holes with ratings, photos, and stats.">
+  <meta name="keywords" content="Golf, South Carolina, Signature Holes, Courses, Ratings, Yardage, Slope">
+  <meta name="author" content="Michael Gilroy">
+
+  <title>Caddy Compass – Signature Holes</title>
+
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- PapaParse for CSV loading -->
+  <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- Quote script -->
+  <script defer src="js/quotes.js"></script>
+
+  <!-- Homepage logic moved to external JS -->
+  <script defer src="js/index.js"></script>
+</head>
+
+<body>
+  <!-- ============================
+       HEADER + NAVIGATION
+       ============================ -->
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <img src="assets/photos/CClogo.png" alt="Caddy Compass Logo" class="logo-img">
+        <span class="logo-text">CADDY COMPASS</span>
+      </div>
+
+      <div class="tabs">
+        <a href="index.html" class="tab active">Home</a>
+        <a href="holes.html" class="tab">Signature Holes</a>
+        <!-- <a href="courses.html" class="tab">Courses</a> -->
+        <a href="review.html" class="tab">Review</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============================
+       MAIN CONTENT
+       ============================ -->
+  <main>
+    <h1 class="page-title">Signature Holes of South Carolina</h1>
+      <p class="hero-subtext">
+    The only place to rank and compare the world’s best golf holes.
+</p>
+
+    <!-- Featured Hole Cards -->
+    <section class="card pad">
+      <div id="featured" class="hole-grid three-wide"></div>
+
+      <div id="noPhotos" style="display:none; text-align:center; color:#666; padding:.5rem 0;">
+        No photos found yet. Add images to <code>assets/photos/</code> and set the <strong>photo</strong> field in
+        <code>assets/courses_holes.csv</code>.
+      </div>
+    </section>
+
+    <!-- ============================
+         GOLF QUOTE SECTION
+         ============================ -->
+    <section id="daily-quote" class="quote-card" aria-labelledby="daily-quote-title">
+      <h2 id="daily-quote-title">Golfer’s Quote of the Moment</h2>
+
+      <blockquote class="quote-body" aria-live="polite">
+        <span id="quote-text">Loading quote…</span>
+        <cite id="quote-author" class="quote-author"></cite>
+      </blockquote>
+
+      <div class="quote-actions">
+        <button id="new-quote-btn" type="button" aria-label="Show another quote">New Quote</button>
+      </div>
+    </section>
+
+    <!-- ============================
+         ABOUT / PURPOSE CARD
+         ============================ -->
+    <section class="grid" style="margin-top:1rem;">
+      <div class="col-4 card pad">
+        <h2>Purpose</h2>
+        <p>
+          Explore South Carolina’s golf courses and <strong>Signature Holes</strong> with searchable stats
+          and community ratings. Caddy Compass gives golfers an easy way to compare courses with a focus
+          on individual hole ratings, difficulty, slope, and yardage — all in one place.
+        </p>
+
+        <h2>About</h2>
+        <p>
+          Many golf websites focus on prices and tee times. Caddy Compass solves this by providing a
+          centralized resource where golfers can compare courses directly and evaluate hole-by-hole.
+          Signature holes are highlighted, but user participation helps complete missing data.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================
+       FOOTER
+       ============================ -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="ft-col">
+        <h4>Information</h4>
+        <p><a href="#">Privacy policy</a> / <a href="#">Terms of use</a></p>
+      </div>
+
+      <div class="ft-col center">
+        <h4>
+          <button class="back-to-top" type="button">Back to top.</button>
+        </h4>
+      </div>
+
+      <div class="ft-col right">
+        <h4>Stay Connected</h4>
+        <form id="newsletter" class="newsletter" novalidate>
+          <input type="email" placeholder="*Email" aria-label="Email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="ft-col center">
+      <div class="social">
+        <a href="#" aria-label="X / Twitter" class="ico">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M18.244 2H21l-6.478 7.41L22 22h-6.778l-5.3-6.9L3.7 22H1l6.956-7.956L2 2h6.778l4.74 6.176L18.244 2Zm-1.188 18h1.66L7.06 4H5.4l11.656 16Z"/>
+          </svg>
+        </a>
+
+        <a href="#" aria-label="Facebook" class="ico">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.08 5.66 21.2 10.44 22v-7.02H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.62.77-1.62 1.56V12h2.76l-.44 2.98h-2.32V22C18.34 21.2 22 17.08 22 12.07Z"/>
+          </svg>
+        </a>
+
+        <a href="#" aria-label="Instagram" class="ico">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5C8.14 2 7.6 2.02 6.1 2.1 4.6 2.18 3.52 2.43 2.63 2.83A4.93 4.93 0 0 0 .83 4.63C.43 5.52.18 6.6.1 8.1.02 9.6 0 10.14 0 14s.02 4.4.1 5.9c.08 1.5.33 2.58.73 3.47.41.89 1.19 1.67 2.08 2.07.89.41 1.97.66 3.47.74 1.5.08 2.04.1 5.9.1s4.4-.02 5.9-.1c1.5-.08 2.58-.33 3.47-.74a4.93 4.93 0 0 0 1.8-1.8c.4-.89.65-1.97.73-3.47.08-1.5.1-2.04.1-5.9s-.02-4.4-.1-5.9c-.08-1.5-.33-2.58-.73-3.47a4.93 4.93 0 0 0-1.8-1.8c-.89-.4-1.97-.65-3.47-.73C16.4 2.02 15.86 2 12 2Z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="designer">Designed by Michael Gilroy</div>
+      <div class="copyright">© Copyright 2025 Caddy Compass. All rights reserved.</div>
+
+      <div class="contact">
+        <div class="contact-title">Contact Info</div>
+        <div>Ph: 555-555-5555</div>
+        <div>Email: Gilroymj@email.sc.edu</div>
+        <div>Myrtle Beach, SC</div>
+      </div>
+
+      <img class="footer-logo" src="assets/photos/CClogo.png" alt="Caddy Compass">
+    </div>
+  </footer>
+
+  <!-- ============================
+       IMAGE LIGHTBOX MODAL
+       ============================ -->
+  <div id="photoModal" class="modal" aria-hidden="true">
+    <span class="modal-close" title="Close" aria-label="Close">&times;</span>
+    <img src="" alt="" id="modalImg">
+  </div>
+
+</body>
+
+</html>
