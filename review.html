@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Share golfer reviews for individual holes, including condition, visual appeal, and fun/playability.">
+  <meta name="keywords" content="Golf reviews, South Carolina golf, hole ratings, condition, visual appeal, fun">
+  <meta name="author" content="Michael Gilroy">
+
+  <title>Course Caddy – Golfer Review</title>
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    :root{
+      --brand:#003C21;
+      --ink:#111;
+      --bg:#f8faf9;
+      --card:#fff;
+      --ring:#d1d5db;
+    }
+
+    body{ margin:0; font-family:Segoe UI,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    header{ background:var(--brand); }
+    .nav{ max-width:1200px; margin:0 auto; padding:.75rem 1rem; display:flex; justify-content:space-between; align-items:center; }
+    .nav-left{ display:flex; align-items:center; gap:.5rem; }
+    .logo-img{ height:48px; width:auto; }
+    .logo-text{ font-weight:800; font-size:1.25rem; color:#fff; letter-spacing:1px; }
+    .tabs{ display:flex; gap:1rem; }
+    .tab{ padding:.5rem 1rem; border-radius:999px; border:none; color:#fff; text-decoration:none; font-weight:600; }
+    .tab.active{ background:#fff; color:var(--brand); }
+
+    main{ max-width:1000px; margin:1rem auto; padding:1rem; }
+    .card{ background:#fff; border:1px solid var(--ring); border-radius:12px; }
+    .pad{ padding:1rem; }
+
+    .page-title{
+      font-size:2.5rem; font-weight:800; color:var(--brand);
+      text-align:center; margin:1rem 0 1.5rem 0;
+    }
+
+    .review-grid{ display:grid; grid-template-columns:360px 1fr; gap:1.25rem; }
+    .left{ display:grid; gap:.9rem; align-content:start; }
+    label{ font-weight:700; color:var(--brand); display:inline-block; margin-bottom:.25rem; }
+    .field{ display:flex; align-items:center; gap:.6rem; }
+    .control{ flex:1 1 auto; padding:.5rem; border:1px solid var(--ring); border-radius:10px; background:#fff; }
+
+    .review-photo{
+      width:100%; max-width:560px; height:280px; object-fit:cover;
+      border-radius:10px; border:1px solid var(--ring); background:#eee; display:block;
+    }
+    .preview-caption{ margin-top:.5rem; font-weight:700; font-size:1.05rem; }
+    .subcaption{ font-size:1.05rem; font-weight:700; margin-top:.15rem; }
+    .hint{ color:#666; font-size:.9rem; }
+
+    textarea#comments{
+      width:100%; min-height:180px; border:1px solid var(--ring); border-radius:10px;
+      padding:.75rem; resize:vertical; background:#fff;
+    }
+
+    .actions{ display:flex; gap:.75rem; margin-top:.5rem; align-items:center; flex-wrap:wrap; }
+    .btn{ padding:.6rem 1.1rem; border:1px solid var(--ring); border-radius:10px; cursor:pointer; font-weight:700; background:#fff; }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    .btn.danger{ background:#fff5f5; border-color:#f0caca; }
+
+    .stars-input{ display:flex; align-items:center; gap:.35rem; --size:22px; }
+    .star-btn{ font-size:var(--size); line-height:1; cursor:pointer; user-select:none; }
+    .star-btn.full{ color:#f4c430; }
+    .star-btn.empty{ color:#d9d9d9; }
+    .star-btn.half{
+      background:linear-gradient(90deg,#f4c430 50%,#d9d9d9 50%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .rating-value{ min-width:40px; text-align:center; font-weight:600; }
+
+    @media (max-width: 900px){
+      .review-grid{ grid-template-columns:1fr; }
+      .review-photo{ height:240px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <img src="assets/photos/CClogo.png" alt="Caddy Compass Logo" class="logo-img" />
+        <span class="logo-text">CADDY COMPASS</span>
+      </div>
+      <div class="tabs">
+        <a href="index.html" class="tab">Home</a>
+        <a href="holes.html" class="tab">Signature Holes</a>
+        <!-- <a href="courses.html" class="tab">Courses</a> -->
+        <a href="review.html" class="tab active">Review</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title">Golfer Review</h1>
+
+    <section class="card pad review-card">
+      <form id="reviewForm" novalidate>
+        <div class="review-grid">
+          <div class="left">
+            <div>
+              <label for="course">Course</label>
+              <div class="field">
+                <select id="course" class="control"></select>
+              </div>
+            </div>
+
+            <div>
+              <label for="hole">Hole</label>
+              <div class="field">
+                <select id="hole" class="control"></select>
+              </div>
+
+            </div>
+            <button id="showMissingHoleForm" class="btn" type="button">
+              Can't find the hole? Submit it here
+            </button>
+            <div id="missingHoleSection" style="display:none; margin-top:15px;">
+  
+              <h3>Add Missing Hole</h3>
+
+              <div>
+                <label>Course Name</label>
+                <input type="text" id="manualCourse" />
+              </div>
+
+              <div>
+                <label>City / Location</label>
+                <input type="text" id="manualLocation" />
+              </div>
+
+              <div>
+                <label>Hole Number</label>
+                <input type="number" id="manualHoleNumber" min="1" max="18" />
+              </div>
+
+              <div>
+                <label>Par</label>
+                <input type="number" id="manualPar" min="3" max="6" />
+              </div>
+
+              <div>
+                <label>Yardage</label>
+                <input type="number" id="manualYardage" />
+              </div>
+              
+              <div>
+                <label>Hole Photo Optional</label>
+                <input type="file" id="manualPhoto" accept="image/*" />
+              </div>
+
+              <button id="submitMissingHoleBtn" type="button">
+                Submit Missing Hole
+              </button>
+            </div>
+            <div>
+              <label>Condition</label>
+              <div class="field">
+                <div id="conditionStars" class="stars-input"></div>
+                <div id="conditionVal" class="rating-value">0.0</div>
+              </div>
+            </div>
+
+            <div>
+              <label>Visual Appeal</label>
+              <div class="field">
+                <div id="visualStars" class="stars-input"></div>
+                <div id="visualVal" class="rating-value">0.0</div>
+              </div>
+            </div>
+
+            <div>
+              <label>Fun / Playability</label>
+              <div class="field">
+                <div id="funStars" class="stars-input"></div>
+                <div id="funVal" class="rating-value">0.0</div>
+              </div>
+            </div>
+
+            <div>
+              <label>Par</label>
+              <div class="field">
+                <div id="parDisplay" class="control" style="font-weight:700;">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="right">
+            <img id="previewImg" class="review-photo" src="assets/photos/nophoto.png" alt="Course hole preview" />
+            <div id="previewTitle" class="preview-caption">—</div>
+            <div id="previewHole" class="subcaption">—</div>
+            <div id="previewHint" class="hint">Choose a course and hole to preview the photo and info.</div>
+          </div>
+        </div>
+
+        <div style="margin-top:1.2rem;">
+          <label for="comments">Comments</label>
+          <textarea id="comments" placeholder="Share your thoughts…"></textarea>
+          <div style="margin-top:1rem;">
+            <label for="reviewPhoto">Add Photo Optional</label>
+            <input type="file" id="reviewPhoto" accept="image/*" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveBtn" class="btn primary" type="submit">Submit Review</button>
+          <button id="resetBtn" class="btn danger" type="button">Reset</button>
+          <div id="saveNote" class="hint"></div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="ft-col">
+        <h4>Information</h4>
+        <p><a href="#">Privacy policy</a> / <a href="#">Terms of use</a></p>
+      </div>
+
+      <div class="ft-col center">
+        <h4><button class="back-to-top" type="button">Back to top.</button></h4>
+      </div>
+
+      <div class="ft-col right">
+        <h4>Stay connected</h4>
+        <form id="newsletter" class="newsletter" novalidate>
+          <input type="email" placeholder="*Email" aria-label="Email" required />
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-bottom">
+      <div class="designer">Designed by Michael Gilroy</div>
+      <div class="copyright">© Copyright 2025 Caddy Compass. All rights reserved.</div>
+      <div class="contact">
+        <div class="contact-title">Contact Info</div>
+        <div>Ph: 555-555-5555</div>
+        <div>Email: Gilroymj@email.sc.edu</div>
+        <div>Myrtle Beach, SC</div>
+      </div>
+      <img class="footer-logo" src="assets/photos/CClogo.png" alt="Caddy Compass" />
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5000";
+
+    const $ = (sel) => document.querySelector(sel);
+
+    let courses = [];
+    let holesByCourse = {};
+    let currentHoleMap = {};
+
+    function buildStarInput(container, onChange){
+      container.innerHTML = "";
+
+      for(let i = 1; i <= 5; i++){
+        const span = document.createElement("span");
+        span.className = "star-btn empty";
+        span.textContent = "★";
+        span.dataset.index = i;
+        container.appendChild(span);
+      }
+
+      let value = 0.0;
+
+      function render(){
+        const full = Math.floor(value);
+        const half = (value - full) === 0.5;
+
+        [...container.children].forEach((el, idx) => {
+          const i = idx + 1;
+          el.classList.remove("full", "half", "empty");
+
+          if(i <= full) el.classList.add("full");
+          else if(i === full + 1 && half) el.classList.add("half");
+          else el.classList.add("empty");
+        });
+      }
+
+      function setValue(v){
+        value = Math.max(0, Math.min(5, Math.round(v * 2) / 2));
+        render();
+        onChange(value);
+      }
+
+      container.addEventListener("click", (e) => {
+        if(!e.target.classList.contains("star-btn")) return;
+
+        const rect = e.target.getBoundingClientRect();
+        const idx = Number(e.target.dataset.index);
+        const isLeftHalf = (e.clientX - rect.left) < rect.width / 2;
+        const v = idx - (isLeftHalf ? 0.5 : 0);
+        setValue(v);
+      });
+
+      setValue(0);
+      return {
+        set: setValue,
+        get: () => value
+      };
+    }
+
+    function updatePreview(){
+      const courseId = $("#course").value;
+      const holeId = $("#hole").value;
+
+      const holes = holesByCourse[courseId] || [];
+      const selectedHole = holes.find((hole) => String(hole.id) === String(holeId));
+
+      if(!selectedHole){
+        $("#previewImg").src = "assets/photos/nophoto.png";
+        $("#previewTitle").textContent = "—";
+        $("#previewHole").textContent = "—";
+        $("#parDisplay").textContent = "—";
+        return;
+      }
+
+      const course = courses.find((c) => String(c.id) === String(courseId));
+      const courseName = course ? course.name : "—";
+
+      $("#previewTitle").textContent = courseName;
+      $("#previewHole").textContent = `Hole ${selectedHole.hole_number}`;
+      $("#parDisplay").textContent = selectedHole.par || "—";
+
+      const guess1 = `${courseName.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\\s+/g, "-")}-${selectedHole.hole_number}.jpg`;
+      const guess2 = `${courseName.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\\s+/g, "-")}-${selectedHole.hole_number}.png`;
+
+      $("#previewImg").src = `assets/photos/${guess1}`;
+      $("#previewImg").onerror = function(){
+        this.onerror = function(){
+          this.src = "assets/photos/nophoto.png";
+        };
+        this.src = `assets/photos/${guess2}`;
+      };
+    }
+
+    async function loadCourses(){
+      const response = await fetch(`${API_BASE}/api/courses`);
+      courses = await response.json();
+
+      const courseSelect = $("#course");
+      courseSelect.innerHTML = "";
+
+      courses.forEach((course) => {
+        const option = document.createElement("option");
+        option.value = course.id;
+        option.textContent = course.name;
+        courseSelect.appendChild(option);
+      });
+    }
+
+    async function loadHolesForCourse(courseId){
+      const response = await fetch(`${API_BASE}/api/course-holes/${courseId}`);
+      const holes = await response.json();
+      holesByCourse[courseId] = holes;
+
+      const holeSelect = $("#hole");
+      holeSelect.innerHTML = "";
+
+      holes.forEach((hole) => {
+        const option = document.createElement("option");
+        option.value = hole.id;
+        option.textContent = `Hole ${hole.hole_number}`;
+        holeSelect.appendChild(option);
+      });
+
+      updatePreview();
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const conditionControl = buildStarInput($("#conditionStars"), (value) => {
+        $("#conditionVal").textContent = value.toFixed(1);
+      });
+
+      const visualControl = buildStarInput($("#visualStars"), (value) => {
+        $("#visualVal").textContent = value.toFixed(1);
+      });
+
+      const funControl = buildStarInput($("#funStars"), (value) => {
+        $("#funVal").textContent = value.toFixed(1);
+      });
+
+      await loadCourses();
+
+      if($("#course").value){
+        await loadHolesForCourse($("#course").value);
+      }
+
+      $("#course").addEventListener("change", async () => {
+        await loadHolesForCourse($("#course").value);
+      });
+
+      $("#hole").addEventListener("change", updatePreview);
+
+      $("#reviewForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append("hole_id", $("#hole").value);
+        formData.append("condition_score", conditionControl.get());
+        formData.append("visual_score", visualControl.get());
+        formData.append("fun_score", funControl.get());
+        formData.append("comments", $("#comments").value);
+
+        const reviewPhotoInput = document.getElementById("reviewPhoto");
+
+        if (reviewPhotoInput.files.length > 0) {
+          formData.append("photo", reviewPhotoInput.files[0]);
+        }
+
+        const response = await fetch(`${API_BASE}/api/submit_rating`, {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.json();
+
+        if(result.success){
+          $("#saveNote").textContent = "Review submitted successfully.";
+          $("#comments").value = "";
+          conditionControl.set(0);
+          visualControl.set(0);
+          funControl.set(0);
+        } else {
+          $("#saveNote").textContent = result.message || "Something went wrong.";
+        }
+      });
+
+      $("#resetBtn").addEventListener("click", () => {
+        $("#comments").value = "";
+        $("#saveNote").textContent = "";
+        $("#conditionVal").textContent = "0.0";
+        $("#visualVal").textContent = "0.0";
+        $("#funVal").textContent = "0.0";
+        location.reload();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".back-to-top")) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+
+      const newsletter = $("#newsletter");
+      if (newsletter) {
+        newsletter.addEventListener("submit", (e) => {
+          e.preventDefault();
+          alert("Thanks for joining our newsletter!");
+          newsletter.reset();
+        });
+      }
+    });
+
+    // toggle form
+    document.getElementById("showMissingHoleForm").addEventListener("click", function () {
+        const section = document.getElementById("missingHoleSection");
+        section.style.display = section.style.display === "none" ? "block" : "none";
+    });
+
+   // submit missing hole form
+document.getElementById("submitMissingHoleBtn").addEventListener("click", async function () {
+    const formData = new FormData();
+
+    formData.append("course_name", document.getElementById("manualCourse").value);
+    formData.append("location", document.getElementById("manualLocation").value);
+    formData.append("hole_number", document.getElementById("manualHoleNumber").value);
+    formData.append("par", document.getElementById("manualPar").value);
+    formData.append("yardage", document.getElementById("manualYardage").value);
+    formData.append("condition", document.getElementById("conditionVal").textContent);
+    formData.append("visual", document.getElementById("visualVal").textContent);
+    formData.append("fun", document.getElementById("funVal").textContent);
+    formData.append("notes", document.getElementById("comments").value);
+
+    const photoInput = document.getElementById("manualPhoto");
+
+    if (photoInput.files.length > 0) {
+        formData.append("photo", photoInput.files[0]);
+    }
+
+    const response = await fetch("http://127.0.0.1:5000/api/submit_missing_hole", {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+    alert(result.message || "Submitted!");
+});
+  </script>
+</body>
+</html>
