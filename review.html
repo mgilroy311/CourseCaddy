@@ -253,7 +253,7 @@
   </footer>
 
   <script>
-    const API_BASE = "http://127.0.0.1:5000";
+    const API_BASE = "https://coursecaddy.onrender.com";
 
     const $ = (sel) => document.querySelector(sel);
 
@@ -488,7 +488,7 @@ document.getElementById("submitMissingHoleBtn").addEventListener("click", async 
         formData.append("photo", photoInput.files[0]);
     }
 
-    const response = await fetch("http://127.0.0.1:5000/api/submit_missing_hole", {
+    const response = await fetch("https://coursecaddy.onrender.com/api/submit_missing_hole", {
         method: "POST",
         body: formData
     });
